@@ -106,9 +106,6 @@ public:
 	}
 	int doTheFade(unsigned long thisMillis) {
 
-		// is it time to update yet?
-		// if not, nothing happens
-		//if (habilitador) {
 
 		if (thisMillis - previousFadeMillis >= intervalo) {
 			if (cnt == 9)
@@ -492,121 +489,6 @@ void selector_de_color(int color, int puerto, int intensidad)
 		color_cafe(puerto, intensidad);
 		break;
 	}
-}
-void secuencia_on_off(int tiempo)
-{
-	selector_de_color(verde, 4, 255);
-	delay(tiempo * 1000);
-	selector_de_color(rojo, 2, 255);
-	delay(tiempo * 1000);
-	selector_de_color(magenta, 1, 255);
-	delay(tiempo * 1000);
-	selector_de_color(cafe, 3, 255);
-	delay(tiempo * 1000);
-	selector_de_color(cafe, 1, 0);
-	selector_de_color(cafe, 2, 0);
-	selector_de_color(cafe, 3, 0);
-	selector_de_color(cafe, 4, 0);
-}
-
-void secuencia_on_off_(int tiempo)
-{
-	selector_de_color(verde, 4, 255);
-	delay(tiempo * 1000);
-	selector_de_color(verde, 4, 0);
-	selector_de_color(rojo, 2, 255);
-	delay(tiempo * 1000);
-	selector_de_color(rojo, 2, 0);
-	selector_de_color(magenta, 1, 255);
-	delay(tiempo * 1000);
-	selector_de_color(magenta, 1, 0);
-	selector_de_color(cafe, 3, 255);
-	delay(tiempo * 1000);
-	selector_de_color(cafe, 3, 0);
-}
-void secuencia_on_off_cambio_color()
-{
-	selector_de_color(1, 4, 255);
-	delay(375);
-	selector_de_color(2, 4, 255);
-	delay(375);
-	selector_de_color(3, 4, 255);
-	delay(375);
-	selector_de_color(4, 4, 255);
-	delay(375);
-	selector_de_color(5, 4, 255);
-	delay(375);
-	selector_de_color(6, 4, 255);
-	delay(375);
-	selector_de_color(7, 4, 255);
-	delay(375);
-	selector_de_color(8, 4, 255);
-	delay(375);
-
-	selector_de_color(8, 4, 0);
-	selector_de_color(1, 2, 255);
-	delay(375);
-	selector_de_color(2, 2, 255);
-	delay(375);
-	selector_de_color(3, 2, 255);
-	delay(375);
-	selector_de_color(4, 2, 255);
-	delay(375);
-	selector_de_color(5, 2, 255);
-	delay(375);
-	selector_de_color(6, 2, 255);
-	delay(375);
-	selector_de_color(7, 2, 255);
-	delay(375);
-	selector_de_color(8, 2, 255);
-	delay(375);
-
-	selector_de_color(8, 2, 0);
-	selector_de_color(1, 1, 255);
-	delay(375);
-	selector_de_color(2, 1, 255);
-	delay(375);
-	selector_de_color(3, 1, 255);
-	delay(375);
-	selector_de_color(4, 1, 255);
-	delay(375);
-	selector_de_color(5, 1, 255);
-	delay(375);
-	selector_de_color(6, 1, 255);
-	delay(375);
-	selector_de_color(7, 1, 255);
-	delay(375);
-	selector_de_color(8, 1, 255);
-	delay(375);
-
-	selector_de_color(8, 1, 0);
-	selector_de_color(1, 3, 255);
-	delay(375);
-	selector_de_color(2, 3, 255);
-	delay(375);
-	selector_de_color(3, 3, 255);
-	delay(375);
-	selector_de_color(4, 3, 255);
-	delay(375);
-	selector_de_color(5, 3, 255);
-	delay(375);
-	selector_de_color(6, 3, 255);
-	delay(375);
-	selector_de_color(7, 3, 255);
-	delay(375);
-	selector_de_color(8, 3, 255);
-	delay(375);
-	selector_de_color(8, 3, 0);
-	//  selector_de_color(verde,4,0);
-	//  selector_de_color(rojo,2,255);
-	//  delay(tiempo*1000);
-	//  selector_de_color(rojo,2,0);
-	//  selector_de_color(magenta,1,255);
-	//  delay(tiempo*1000);
-	//  selector_de_color(magenta,1,0);
-	//  selector_de_color(cafe,3,255);
-	//  delay(tiempo*1000);
-	//  selector_de_color(cafe,3,0);
 }
 void matrix_secuencia_on_off_(int tiempo, int color[10], int puertos[10])
 {
