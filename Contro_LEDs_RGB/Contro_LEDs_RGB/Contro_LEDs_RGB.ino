@@ -115,13 +115,9 @@ public:
 				selector_de_color(contador, puerto, intensidad);
 
 				if (intensidad >= maxPWM) {
-
-
-					// At max, limit and change direction
+					
 					intensidad = maxPWM;
 					direccion = DOWN;
-					//selector_de_color(contador,puerto, 0);
-					//contador++;
 				}
 			}
 			else {
@@ -133,8 +129,6 @@ public:
 					// At min, limit and change direction
 					intensidad = minPWM;
 					direccion = UP;
-					//selector_de_color(contador,puerto, 0);
-					//contador++;
 					cnt++;
 
 					contador = random(1, 8);
