@@ -75,8 +75,8 @@ void setup() {
 	color_blanco(2, 0);
 	color_blanco(3, 0);
 	color_blanco(4, 0);
-	/*color_amarillo(5, 0);
-	Serial.begin(9600);*/
+	//color_amarillo(5, 0);
+	Serial.begin(9600);
 
 }
 class Desvanecimiento
@@ -88,10 +88,8 @@ class Desvanecimiento
 	int intensidad;
 	int contador;
 	unsigned long previousFadeMillis;
-	bool habilitador = 1;
 	int cnt = 0;
-	int cont = 0;
-	int flag;
+
 public:
 	Desvanecimiento(int puerto_, int incremento_, int intervalo_, byte direccion_, int intensidad_, unsigned long previousFadeMillis_, int cont)
 	{
@@ -112,7 +110,6 @@ public:
 			{
 				cnt = 0;
 			}
-			// yup, it's time!
 			if (direccion == UP) {
 				intensidad = intensidad + incremento;
 				selector_de_color(contador, puerto, intensidad);
@@ -145,10 +142,7 @@ public:
 				}
 
 			}
-			// Only need to update when it changes
-
-
-			// reset millis for the next iteration (fade timer only)
+			
 			previousFadeMillis = thisMillis;
 
 		}
@@ -490,42 +484,45 @@ void selector_de_color(int color, int puerto, int intensidad)
 		break;
 	}
 }
-void matrix_secuencia_on_off_(int tiempo, int color[10], int puertos[10])
+void matrix_secuencia_on_off_(double tiempo, int color[10], int puertos[10])
 {
 	int cont = 0;
 	for (int j = 0; j <= 9;j++)
 	{
 		if (puertos[j] != 0)
+		{ 
 			cont++;
+			Serial.println(cont);
+		}
+			
 	}
-	for (int i = 0; i <= cont;i++)
+	for (int i = 0; i < cont;i++)
 	{
 		selector_de_color(color[i], puertos[i], 255);
 		delay(tiempo * 1000);
-		selector_de_color(1, puertos[i], 0);
-	}
-	for (int i = 0; i <= cont;i++)
-	{
 		selector_de_color(rojo, puertos[i], 0);
-		//delay(tiempo * 1000);
-
 	}
+	
 }
-void matrix_secuencia_on_off(int tiempo, int color[10], int puertos[10])
+void matrix_secuencia_on_off(double tiempo, int color[10], int puertos[10])
 {
 	int cont = 0;
 	for (int j = 0; j <= 9;j++)
 	{
 		if (puertos[j] != 0)
+		{
 			cont++;
+			Serial.println(cont);
+		}
+			
 	}
-	for (int i = 0; i <= cont;i++)
+	for (int i = 0; i <cont;i++)
 	{
 		selector_de_color(color[i], puertos[i], 255);
 		delay(tiempo * 1000);
 
 	}
-	for (int i = 0; i <= cont;i++)
+	for (int i = 0; i < cont;i++)
 	{
 		selector_de_color(rojo, puertos[i], 0);
 		//delay(tiempo * 1000);
@@ -537,10 +534,14 @@ void matrix_secuencia_on_off_cambio_color(double tiempo, int puertos[10], int co
 	int cont = 0;
 	for (int k = 0; k <= 9;k++)
 	{
-		if (puertos[k] != 0)
+		if (puertos[k] != 0) 
+		{
 			cont++;
+			Serial.println(cont);
+		}
+			
 	}
-	for (int j = 0;j <= cont;j++)
+	for (int j = 0;j < cont;j++)
 	{
 		for (int i = 1;i <= 6;i++)
 		{
@@ -549,7 +550,7 @@ void matrix_secuencia_on_off_cambio_color(double tiempo, int puertos[10], int co
 		}
 		selector_de_color(color[j], puertos[j], 255);
 	}
-	for (int i = 0; i <= cont;i++)
+	for (int i = 0; i < cont;i++)
 	{
 		selector_de_color(rojo, puertos[i], 0);
 		//delay(tiempo * 1000);
@@ -568,46 +569,38 @@ void loop() {
 	int color_[10] = { magenta,magenta,amarillo,rojo,verde, verde, verde, magenta,magenta };
 	int puertos[10] = { piso_izquierda,piso_derecho,coral_naranja, coral_rojo,alga_izquierda,alga_central,alga_derecha,delfin_derecho,delfin_izquierda };
 	//matrix_secuencia_on_off(1.5,color,puertos);
-	color_verde(5, 255);
-	color_verde(6, 255);
-	color_verde(7, 255);
-	color_magenta(8, 255);
-	color_magenta(9, 255);
+	
 	if (flag == 0) {
+		color_verde(5, 255);
+		color_verde(6, 255);
+		color_verde(7, 255);
+		color_magenta(8, 255);
+		color_magenta(9, 255);
 		puerto1.doTheFade(currentMillis);
 		puerto2.doTheFade(currentMillis1);
 		puerto3.doTheFade(currentMillis2);
-		//puerto4.doTheFade(currentMillis_);
+		puerto4.doTheFade(currentMillis_);
 
-		//Serial.println(puerto4.doTheFade(currentMillis_));
+		Serial.println(puerto4.doTheFade(currentMillis_));
 		if (puerto4.doTheFade(currentMillis_))
 		{
 			flag = 1;
 		}
 
 	}
-	if (flag == 1) {
-		/*color_blanco(5, 0);
-		color_blanco(6, 0);
-		color_blanco(7, 0);
-		color_blanco(8, 0);
-		color_blanco(9, 0);*/
+	if (flag == 1) 
+	{
+		color_verde(5, 0);
+		color_verde(6, 0);
+		color_verde(7, 0);
+		color_magenta(8, 0);
+		color_magenta(9, 0);
 		matrix_secuencia_on_off_(0.5, color, puertos);
 		//matrix_secuencia_on_off(1,color,puertos);
 		matrix_secuencia_on_off_cambio_color(2, puertos, color_);
 		matrix_secuencia_on_off(0.5, color, puertos);
-		//puerto1.doTheFade(currentMillis);
-		//enable=1;
 		flag = 0;
 
 	}
-
-
-	//  doTheFade1(currentMillis1,5);
-	//  doTheFade2(currentMillis2,pwmLED2);
-	//color_amarillo(1,255);
-	//color_cian(2,255);
-	//color_cian(3,255);
-	//color_cian(4,255);
 
 }
