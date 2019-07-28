@@ -39,9 +39,9 @@ byte fadeDirection2 = UP;
 int fadeValue1;
 int fadeValue2;
 // How smooth to fade?
-byte fadeIncrement = 5;
-byte fadeIncrement1 = 5;
-byte fadeIncrement2 = 5;
+int fadeIncrement =2;
+int fadeIncrement1 = 5;
+int fadeIncrement2 = 5;
 
 // millis() timing Variable, just for fading
 
@@ -49,9 +49,9 @@ unsigned long previousFadeMillis1;
 unsigned long previousFadeMillis2;
 
 // How fast to increment?
-int fadeInterval = 10;
-int fadeInterval1 = 75;
-int fadeInterval2 = 120;
+double tiempo_color = 1.5;
+double fadeInterval1 = 75;
+double fadeInterval2 = 120;
 void setup() {
 	pinMode(22, OUTPUT);
 	pinMode(23, OUTPUT);
@@ -81,20 +81,20 @@ class Desvanecimiento
 {
 	int puerto;
 	int incremento;
-	int intervalo;
-	byte direccion;
+	double tiempo;
+	byte direccion=UP;
 	int intensidad;
 	int contador;
 	unsigned long previousFadeMillis;
 	int cnt = 0;
+	double intervalo;
 
 public:
-	Desvanecimiento(int puerto_, int incremento_, int intervalo_, byte direccion_, int intensidad_, unsigned long previousFadeMillis_, int cont)
+	Desvanecimiento(int puerto_, int incremento_, double tiempo_, int intensidad_, unsigned long previousFadeMillis_, int cont)
 	{
 		puerto = puerto_;
 		incremento = incremento_;
-		intervalo = intervalo_;
-		direccion = direccion_;
+		tiempo = tiempo_;
 		intensidad = intensidad_;
 		previousFadeMillis = previousFadeMillis_;
 		contador = cont;
@@ -102,6 +102,7 @@ public:
 	}
 	int doTheFade(unsigned long thisMillis) {
 
+		intervalo = (500 * incremento * tiempo) / 255;
 
 		if (thisMillis - previousFadeMillis >= intervalo) {
 			if (cnt == 9)
@@ -110,18 +111,22 @@ public:
 			}
 			if (direccion == UP) {
 				intensidad = intensidad + incremento;
-				selector_de_color(contador, puerto, intensidad);
+				
 
 				if (intensidad >= maxPWM) {
 					
 					intensidad = maxPWM;
 					direccion = DOWN;
+					selector_de_color(contador, puerto, intensidad);
+				}
+				else
+				{
+					selector_de_color(contador, puerto, intensidad);
 				}
 			}
 			else {
 				intensidad = intensidad - incremento;
-
-				selector_de_color(contador, puerto, intensidad);
+				Serial.println(intervalo);
 
 				if (intensidad <= minPWM) {
 					// At min, limit and change direction
@@ -129,7 +134,12 @@ public:
 					direccion = UP;
 					cnt++;
 					contador = random(1, 8);
+					selector_de_color(contador, puerto, intensidad);
 
+				}
+				else
+				{
+					selector_de_color(contador, puerto, intensidad);
 				}
 
 			}
@@ -148,10 +158,10 @@ public:
 	}
 	//}
 };
-Desvanecimiento Coral_Naranja(coral_naranja, fadeIncrement, fadeInterval, UP, 0, 0, cont_);
-Desvanecimiento Coral_Rojo(coral_rojo, fadeIncrement, fadeInterval, UP, 0, 0, random(1, 8));
-Desvanecimiento Delfin_Derecho(delfin_derecho, fadeIncrement, fadeInterval, UP, 0, 0, random(1, 8));
-Desvanecimiento Delfin_Izquierdo(delfin_izquierda, fadeIncrement, fadeInterval, UP, 0, 0, random(1, 8));
+Desvanecimiento Coral_Naranja(coral_naranja, fadeIncrement, tiempo_color, 0, 0, cont_);
+Desvanecimiento Coral_Rojo(coral_rojo, fadeIncrement, tiempo_color, 0, 0, random(1, 8));
+Desvanecimiento Delfin_Derecho(delfin_derecho, fadeIncrement, tiempo_color, 0, 0, random(1, 8));
+Desvanecimiento Delfin_Izquierdo(delfin_izquierda, fadeIncrement, tiempo_color, 0, 0, random(1, 8));
 
 void encender_led(byte puerto_R, byte puerto_G, byte puerto_B, int intensidad_R, int intensidad_G, int intensidad_B)
 {
@@ -564,13 +574,13 @@ void loop() {
 		color_verde(7, 255);
 		color_magenta(8, 255);
 		color_magenta(9, 255);
-		Coral_Naranja.doTheFade(currentMillis);
+		//Coral_Naranja.doTheFade(currentMillis);
 		Coral_Rojo.doTheFade(currentMillis1);
-		Delfin_Derecho.doTheFade(currentMillis2);
-		Delfin_Izquierdo.doTheFade(currentMillis_);
+		//Delfin_Derecho.doTheFade(currentMillis2);
+		//Delfin_Izquierdo.doTheFade(currentMillis_);
 
-		Serial.println(Delfin_Izquierdo.doTheFade(currentMillis_));
-		if (Delfin_Izquierdo.doTheFade(currentMillis_))
+		//Serial.println(Delfin_Izquierdo.doTheFade(currentMillis_));
+		if (Coral_Rojo.doTheFade(currentMillis_))
 		{
 			flag = 1;
 
