@@ -4,8 +4,6 @@
  Author:	amere
 */
 
-
-
 #define delfin_derecho 1
 #define coral_rojo 2
 #define coral_naranja 3
@@ -70,13 +68,13 @@ void setup() {
 	pinMode(44, OUTPUT);
 	pinMode(46, OUTPUT);
 	pinMode(48, OUTPUT);
+	Serial.begin(9600);
 	// put pwmLED into known state (off)
 	color_blanco(1, 0);
 	color_blanco(2, 0);
 	color_blanco(3, 0);
 	color_blanco(4, 0);
 	//color_amarillo(5, 0);
-	Serial.begin(9600);
 
 }
 class Desvanecimiento
@@ -130,7 +128,6 @@ public:
 					intensidad = minPWM;
 					direccion = UP;
 					cnt++;
-
 					contador = random(1, 8);
 
 				}
@@ -151,10 +148,10 @@ public:
 	}
 	//}
 };
-Desvanecimiento puerto1(coral_naranja, fadeIncrement, fadeInterval, UP, 0, 0, cont_);
-Desvanecimiento puerto2(coral_rojo, fadeIncrement, fadeInterval, UP, 0, 0, random(1, 8));
-Desvanecimiento puerto3(delfin_derecho, fadeIncrement, fadeInterval, UP, 0, 0, random(1, 8));
-Desvanecimiento puerto4(delfin_izquierda, fadeIncrement, fadeInterval, UP, 0, 0, random(1, 8));
+Desvanecimiento Coral_Naranja(coral_naranja, fadeIncrement, fadeInterval, UP, 0, 0, cont_);
+Desvanecimiento Coral_Rojo(coral_rojo, fadeIncrement, fadeInterval, UP, 0, 0, random(1, 8));
+Desvanecimiento Delfin_Derecho(delfin_derecho, fadeIncrement, fadeInterval, UP, 0, 0, random(1, 8));
+Desvanecimiento Delfin_Izquierdo(delfin_izquierda, fadeIncrement, fadeInterval, UP, 0, 0, random(1, 8));
 
 void encender_led(byte puerto_R, byte puerto_G, byte puerto_B, int intensidad_R, int intensidad_G, int intensidad_B)
 {
@@ -486,7 +483,6 @@ void matrix_secuencia_on_off_(double tiempo, int color[10], int puertos[10])
 		if (puertos[j] != 0)
 		{ 
 			cont++;
-			Serial.println(cont);
 		}
 			
 	}
@@ -506,7 +502,6 @@ void matrix_secuencia_on_off(double tiempo, int color[10], int puertos[10])
 		if (puertos[j] != 0)
 		{
 			cont++;
-			Serial.println(cont);
 		}
 			
 	}
@@ -531,7 +526,6 @@ void matrix_secuencia_on_off_cambio_color(double tiempo, int puertos[10], int co
 		if (puertos[k] != 0) 
 		{
 			cont++;
-			Serial.println(cont);
 		}
 			
 	}
@@ -570,15 +564,16 @@ void loop() {
 		color_verde(7, 255);
 		color_magenta(8, 255);
 		color_magenta(9, 255);
-		puerto1.doTheFade(currentMillis);
-		puerto2.doTheFade(currentMillis1);
-		puerto3.doTheFade(currentMillis2);
-		puerto4.doTheFade(currentMillis_);
+		Coral_Naranja.doTheFade(currentMillis);
+		Coral_Rojo.doTheFade(currentMillis1);
+		Delfin_Derecho.doTheFade(currentMillis2);
+		Delfin_Izquierdo.doTheFade(currentMillis_);
 
-		Serial.println(puerto4.doTheFade(currentMillis_));
-		if (puerto4.doTheFade(currentMillis_))
+		Serial.println(Delfin_Izquierdo.doTheFade(currentMillis_));
+		if (Delfin_Izquierdo.doTheFade(currentMillis_))
 		{
 			flag = 1;
+
 		}
 
 	}
@@ -589,10 +584,10 @@ void loop() {
 		color_verde(7, 0);
 		color_magenta(8, 0);
 		color_magenta(9, 0);
-		matrix_secuencia_on_off_(0.5, color, puertos);
+		matrix_secuencia_on_off(0.5, color, puertos);
 		//matrix_secuencia_on_off(1,color,puertos);
 		matrix_secuencia_on_off_cambio_color(2, puertos, color_);
-		matrix_secuencia_on_off(0.5, color, puertos);
+		matrix_secuencia_on_off_(0.5, color, puertos);
 		flag = 0;
 
 	}
