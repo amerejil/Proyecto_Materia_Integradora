@@ -15,14 +15,16 @@
 #define piso_izquierda 9
 #define UP 0
 #define DOWN 1
-#define rojo 1
-#define verde 2
-#define azul 3
-#define magenta 4
-#define blanco 5
-#define amarillo 6
-#define cian 7
-#define cafe 8
+
+#define blanco 1
+#define amarillo 2
+#define cafe 3
+#define rojo 4
+#define verde 5
+#define cian 6
+#define magenta 7
+#define azul 8
+
 
 // constants for min and max PWM
 const int minPWM = 0;
@@ -574,10 +576,9 @@ void loop() {
 		color_verde(7, 255);
 		color_magenta(8, 255);
 		color_magenta(9, 255);
-		//Coral_Naranja.doTheFade(currentMillis);
-		Coral_Rojo.doTheFade(currentMillis1);
-		//Delfin_Derecho.doTheFade(currentMillis2);
-		//Delfin_Izquierdo.doTheFade(currentMillis_);
+		Coral_Naranja.doTheFade(currentMillis);
+		Delfin_Derecho.doTheFade(currentMillis2);
+		Delfin_Izquierdo.doTheFade(currentMillis_);
 
 		//Serial.println(Delfin_Izquierdo.doTheFade(currentMillis_));
 		if (Coral_Rojo.doTheFade(currentMillis_))
