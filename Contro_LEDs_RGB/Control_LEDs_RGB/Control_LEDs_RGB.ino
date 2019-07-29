@@ -1,10 +1,8 @@
 /*
- Name:		Contro_LEDs_RGB.ino
+ Name:		Control_LEDs_RGB.ino
  Created:	26/07/2019 23:54:28
  Author:	amere
 */
-
-
 
 #define delfin_derecho 1
 #define coral_rojo 2
@@ -17,14 +15,16 @@
 #define piso_izquierda 9
 #define UP 0
 #define DOWN 1
-#define rojo 1
-#define verde 2
-#define azul 3
-#define magenta 4
-#define blanco 5
-#define amarillo 6
-#define cian 7
-#define cafe 8
+
+#define blanco 1
+#define amarillo 2
+#define cafe 3
+#define rojo 4
+#define verde 5
+#define cian 6
+#define magenta 7
+#define azul 8
+
 
 // constants for min and max PWM
 const int minPWM = 0;
@@ -41,9 +41,9 @@ byte fadeDirection2 = UP;
 int fadeValue1;
 int fadeValue2;
 // How smooth to fade?
-byte fadeIncrement = 5;
-byte fadeIncrement1 = 5;
-byte fadeIncrement2 = 5;
+int fadeIncrement =2;
+int fadeIncrement1 = 5;
+int fadeIncrement2 = 5;
 
 // millis() timing Variable, just for fading
 
@@ -51,9 +51,9 @@ unsigned long previousFadeMillis1;
 unsigned long previousFadeMillis2;
 
 // How fast to increment?
-int fadeInterval = 10;
-int fadeInterval1 = 75;
-int fadeInterval2 = 120;
+double tiempo_color = 1.5;
+double fadeInterval1 = 75;
+double fadeInterval2 = 120;
 void setup() {
 	pinMode(22, OUTPUT);
 	pinMode(23, OUTPUT);
@@ -70,35 +70,33 @@ void setup() {
 	pinMode(44, OUTPUT);
 	pinMode(46, OUTPUT);
 	pinMode(48, OUTPUT);
+	Serial.begin(9600);
 	// put pwmLED into known state (off)
 	color_blanco(1, 0);
 	color_blanco(2, 0);
 	color_blanco(3, 0);
 	color_blanco(4, 0);
-	/*color_amarillo(5, 0);
-	Serial.begin(9600);*/
+	//color_amarillo(5, 0);
 
 }
 class Desvanecimiento
 {
 	int puerto;
 	int incremento;
-	int intervalo;
-	byte direccion;
+	double tiempo;
+	byte direccion=UP;
 	int intensidad;
 	int contador;
 	unsigned long previousFadeMillis;
-	bool habilitador = 1;
 	int cnt = 0;
-	int cont = 0;
-	int flag;
+	double intervalo;
+
 public:
-	Desvanecimiento(int puerto_, int incremento_, int intervalo_, byte direccion_, int intensidad_, unsigned long previousFadeMillis_, int cont)
+	Desvanecimiento(int puerto_, int incremento_, double tiempo_, int intensidad_, unsigned long previousFadeMillis_, int cont)
 	{
 		puerto = puerto_;
 		incremento = incremento_;
-		intervalo = intervalo_;
-		direccion = direccion_;
+		tiempo = tiempo_;
 		intensidad = intensidad_;
 		previousFadeMillis = previousFadeMillis_;
 		contador = cont;
@@ -106,49 +104,48 @@ public:
 	}
 	int doTheFade(unsigned long thisMillis) {
 
+		intervalo = (500 * incremento * tiempo) / 255;
 
 		if (thisMillis - previousFadeMillis >= intervalo) {
 			if (cnt == 9)
 			{
 				cnt = 0;
 			}
-			// yup, it's time!
 			if (direccion == UP) {
 				intensidad = intensidad + incremento;
-				selector_de_color(contador, puerto, intensidad);
+				
 
 				if (intensidad >= maxPWM) {
-
-
-					// At max, limit and change direction
+					
 					intensidad = maxPWM;
 					direccion = DOWN;
-					//selector_de_color(contador,puerto, 0);
-					//contador++;
+					selector_de_color(contador, puerto, intensidad);
+				}
+				else
+				{
+					selector_de_color(contador, puerto, intensidad);
 				}
 			}
 			else {
 				intensidad = intensidad - incremento;
-
-				selector_de_color(contador, puerto, intensidad);
+				Serial.println(intervalo);
 
 				if (intensidad <= minPWM) {
 					// At min, limit and change direction
 					intensidad = minPWM;
 					direccion = UP;
-					//selector_de_color(contador,puerto, 0);
-					//contador++;
 					cnt++;
-
 					contador = random(1, 8);
+					selector_de_color(contador, puerto, intensidad);
 
+				}
+				else
+				{
+					selector_de_color(contador, puerto, intensidad);
 				}
 
 			}
-			// Only need to update when it changes
-
-
-			// reset millis for the next iteration (fade timer only)
+			
 			previousFadeMillis = thisMillis;
 
 		}
@@ -163,10 +160,10 @@ public:
 	}
 	//}
 };
-Desvanecimiento puerto1(coral_naranja, fadeIncrement, fadeInterval, UP, 0, 0, cont_);
-Desvanecimiento puerto2(coral_rojo, fadeIncrement, fadeInterval, UP, 0, 0, random(1, 8));
-Desvanecimiento puerto3(delfin_derecho, fadeIncrement, fadeInterval, UP, 0, 0, random(1, 8));
-Desvanecimiento puerto4(delfin_izquierda, fadeIncrement, fadeInterval, UP, 0, 0, random(1, 8));
+Desvanecimiento Coral_Naranja(coral_naranja, fadeIncrement, tiempo_color, 0, 0, cont_);
+Desvanecimiento Coral_Rojo(coral_rojo, fadeIncrement, tiempo_color, 0, 0, random(1, 8));
+Desvanecimiento Delfin_Derecho(delfin_derecho, fadeIncrement, tiempo_color, 0, 0, random(1, 8));
+Desvanecimiento Delfin_Izquierdo(delfin_izquierda, fadeIncrement, tiempo_color, 0, 0, random(1, 8));
 
 void encender_led(byte puerto_R, byte puerto_G, byte puerto_B, int intensidad_R, int intensidad_G, int intensidad_B)
 {
@@ -490,42 +487,43 @@ void selector_de_color(int color, int puerto, int intensidad)
 		break;
 	}
 }
-void matrix_secuencia_on_off_(int tiempo, int color[10], int puertos[10])
+void matrix_secuencia_on_off_(double tiempo, int color[10], int puertos[10])
 {
 	int cont = 0;
 	for (int j = 0; j <= 9;j++)
 	{
 		if (puertos[j] != 0)
+		{ 
 			cont++;
+		}
+			
 	}
-	for (int i = 0; i <= cont;i++)
+	for (int i = 0; i < cont;i++)
 	{
 		selector_de_color(color[i], puertos[i], 255);
 		delay(tiempo * 1000);
-		selector_de_color(1, puertos[i], 0);
-	}
-	for (int i = 0; i <= cont;i++)
-	{
 		selector_de_color(rojo, puertos[i], 0);
-		//delay(tiempo * 1000);
-
 	}
+	
 }
-void matrix_secuencia_on_off(int tiempo, int color[10], int puertos[10])
+void matrix_secuencia_on_off(double tiempo, int color[10], int puertos[10])
 {
 	int cont = 0;
 	for (int j = 0; j <= 9;j++)
 	{
 		if (puertos[j] != 0)
+		{
 			cont++;
+		}
+			
 	}
-	for (int i = 0; i <= cont;i++)
+	for (int i = 0; i <cont;i++)
 	{
 		selector_de_color(color[i], puertos[i], 255);
 		delay(tiempo * 1000);
 
 	}
-	for (int i = 0; i <= cont;i++)
+	for (int i = 0; i < cont;i++)
 	{
 		selector_de_color(rojo, puertos[i], 0);
 		//delay(tiempo * 1000);
@@ -537,10 +535,13 @@ void matrix_secuencia_on_off_cambio_color(double tiempo, int puertos[10], int co
 	int cont = 0;
 	for (int k = 0; k <= 9;k++)
 	{
-		if (puertos[k] != 0)
+		if (puertos[k] != 0) 
+		{
 			cont++;
+		}
+			
 	}
-	for (int j = 0;j <= cont;j++)
+	for (int j = 0;j < cont;j++)
 	{
 		for (int i = 1;i <= 6;i++)
 		{
@@ -549,7 +550,7 @@ void matrix_secuencia_on_off_cambio_color(double tiempo, int puertos[10], int co
 		}
 		selector_de_color(color[j], puertos[j], 255);
 	}
-	for (int i = 0; i <= cont;i++)
+	for (int i = 0; i < cont;i++)
 	{
 		selector_de_color(rojo, puertos[i], 0);
 		//delay(tiempo * 1000);
@@ -568,46 +569,38 @@ void loop() {
 	int color_[10] = { magenta,magenta,amarillo,rojo,verde, verde, verde, magenta,magenta };
 	int puertos[10] = { piso_izquierda,piso_derecho,coral_naranja, coral_rojo,alga_izquierda,alga_central,alga_derecha,delfin_derecho,delfin_izquierda };
 	//matrix_secuencia_on_off(1.5,color,puertos);
-	color_verde(5, 255);
-	color_verde(6, 255);
-	color_verde(7, 255);
-	color_magenta(8, 255);
-	color_magenta(9, 255);
+	
 	if (flag == 0) {
-		puerto1.doTheFade(currentMillis);
-		puerto2.doTheFade(currentMillis1);
-		puerto3.doTheFade(currentMillis2);
-		//puerto4.doTheFade(currentMillis_);
+		color_verde(5, 255);
+		color_verde(6, 255);
+		color_verde(7, 255);
+		color_magenta(8, 255);
+		color_magenta(9, 255);
+		Coral_Naranja.doTheFade(currentMillis);
+		Delfin_Derecho.doTheFade(currentMillis2);
+		Delfin_Izquierdo.doTheFade(currentMillis_);
 
-		//Serial.println(puerto4.doTheFade(currentMillis_));
-		if (puerto4.doTheFade(currentMillis_))
+		//Serial.println(Delfin_Izquierdo.doTheFade(currentMillis_));
+		if (Coral_Rojo.doTheFade(currentMillis_))
 		{
 			flag = 1;
+
 		}
 
 	}
-	if (flag == 1) {
-		/*color_blanco(5, 0);
-		color_blanco(6, 0);
-		color_blanco(7, 0);
-		color_blanco(8, 0);
-		color_blanco(9, 0);*/
-		matrix_secuencia_on_off_(0.5, color, puertos);
+	if (flag == 1) 
+	{
+		color_verde(5, 0);
+		color_verde(6, 0);
+		color_verde(7, 0);
+		color_magenta(8, 0);
+		color_magenta(9, 0);
+		matrix_secuencia_on_off(0.5, color, puertos);
 		//matrix_secuencia_on_off(1,color,puertos);
 		matrix_secuencia_on_off_cambio_color(2, puertos, color_);
-		matrix_secuencia_on_off(0.5, color, puertos);
-		//puerto1.doTheFade(currentMillis);
-		//enable=1;
+		matrix_secuencia_on_off_(0.5, color, puertos);
 		flag = 0;
 
 	}
-
-
-	//  doTheFade1(currentMillis1,5);
-	//  doTheFade2(currentMillis2,pwmLED2);
-	//color_amarillo(1,255);
-	//color_cian(2,255);
-	//color_cian(3,255);
-	//color_cian(4,255);
 
 }

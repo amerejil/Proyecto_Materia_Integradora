@@ -1,2 +1,2 @@
-# Proyecto_Materia_Integrador
+# Proyecto_Materia_Integradora
 Código Control LED RGB Arduino

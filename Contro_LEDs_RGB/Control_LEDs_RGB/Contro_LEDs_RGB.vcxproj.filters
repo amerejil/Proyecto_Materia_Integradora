@@ -15,12 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Contro_LEDs_RGB.ino" />
     <None Include="src\arduino folders read me.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="__vm\.Contro_LEDs_RGB.vsarduino.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <None Include="Control_LEDs_RGB.ino" />
   </ItemGroup>
 </Project>
