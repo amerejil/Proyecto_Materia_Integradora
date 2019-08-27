@@ -757,12 +757,12 @@ void loop() {
 		matrix_secuencia_on_off_(0.3, color, puertos);
 		
 		matrix_secuencia_on_off_hold(0.5, color, puertos);
-		for (int i = 0; i < 70; i++)
+		for (int i = 0; i < 80; i++)
 		{
-			color_magenta(1, 255);
+			color_blanco(1, 255);
 			color_rojo(2, 255);
-			color_rojo(3, 255);
-			color_magenta(4, 255);
+			color_cafe(3, 255);
+			color_blanco(4, 255);
 			color_verde(10, 255);
 			color_verde(6, 255);
 			color_verde(7, 255);
